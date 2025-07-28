@@ -1,4 +1,10 @@
-import { createFileRoute, Outlet, redirect } from "@tanstack/react-router";
+import { Button } from "@/components/ui/button";
+import {
+  createFileRoute,
+  Outlet,
+  redirect,
+  useNavigate,
+} from "@tanstack/react-router";
 
 const checkAuth = () => {
   const token = sessionStorage.getItem("authToken");
@@ -21,9 +27,19 @@ export const Route = createFileRoute("/_private")({
 });
 
 function LayoutPrivate() {
+  const navigate = useNavigate();
+
   return (
-    <div className="bg-zinc-200 w-full h-screen">
+    <div className="bg-zinc-200 w-full h-screen flex flex-col justify-center items-center gap-8">
       <Outlet />
+      <Button
+        className="flex items-center justify-center cursor-pointer"
+        onClick={() => {
+          sessionStorage.removeItem("authToken");
+          navigate({ to: "/" });
+        }}>
+        Logout
+      </Button>
     </div>
   );
 }

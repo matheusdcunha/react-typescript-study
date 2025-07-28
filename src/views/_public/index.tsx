@@ -1,10 +1,17 @@
 //Roteamento
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
-import type { FormEvent } from "react";
-//Componentes
-import { toast } from "sonner";
+import { useState, type FormEvent } from "react";
+
+//Validação
 import { z } from "zod";
+
+//Formulários
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useForm } from "react-hook-form";
+
+//Componentes
 import { Button } from "@/components/ui/button";
+import { toast } from "sonner";
 import {
   Card,
   CardAction,
@@ -14,18 +21,35 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import {
+  Form,
+  FormControl,
+  FormDescription,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import { TypographyH1 } from "@/components/ui/typography-h1";
+import { Eye, EyeClosed } from "lucide-react";
+import { cn } from "@/lib/utils";
 
-const signInSearchSchema = z.object({
+const loginSearchSchema = z.object({
   redirect: z.string().optional().catch(undefined),
+});
+
+const formSchema = z.object({
+  email: z.email({ message: "Email inválido" }),
+  password: z
+    .string()
+    .min(3, { message: "A senha precisa ter no mínimo 3 caracteres" }),
 });
 
 export const Route = createFileRoute("/_public/")({
   component: Index,
   validateSearch: search => {
-    return signInSearchSchema.parse(search);
+    return loginSearchSchema.parse(search);
   },
   head: () => ({
     meta: [
@@ -39,28 +63,37 @@ export const Route = createFileRoute("/_public/")({
 function Index() {
   const navigate = useNavigate();
   const { redirect } = Route.useSearch();
+  const [showPassword, setShowPassword] = useState(false);
 
-  const toastHandle = (e: FormEvent) => {
-    e.preventDefault();
+  const form = useForm<z.infer<typeof formSchema>>({
+    resolver: zodResolver(formSchema),
+    defaultValues: {
+      email: "",
+      password: "",
+    },
+  });
 
-    const myPromise = new Promise<{ name: string }>(resolve => {
+  function onSubmit(data: z.infer<typeof formSchema>) {
+    const { email, password } = data;
+
+    const myPromise = new Promise<z.infer<typeof formSchema>>(resolve => {
       setTimeout(() => {
-        sessionStorage.setItem("authToken", "seu-token-de-exemplo");
-        resolve({ name: "Usuário 01" });
+        sessionStorage.setItem("authToken", "JWT-EXAMPLE");
+        resolve({ email, password });
         navigate({ to: redirect || "/home" });
       }, 3000);
     });
 
     toast.promise(myPromise, {
       loading: "Validando usuário...",
-      success: (data: { name: string }) => {
+      success: ({ email }) => {
         return {
-          message: `${data.name} foi validado com sucesso!`,
+          message: `${email} foi validado com sucesso!`,
         };
       },
       error: "Error",
     });
-  };
+  }
 
   return (
     <div className="w-full max-w-sm flex flex-col">
@@ -84,41 +117,94 @@ function Index() {
           </CardAction>
         </CardHeader>
         <CardContent>
-          <form>
-            <div className="flex flex-col gap-6">
-              <div className="grid gap-2">
-                <Label htmlFor="email">Email</Label>
-                <Input
-                  id="email"
-                  type="email"
-                  placeholder="email@exemplo.com"
-                  required
-                />
-              </div>
+          <Form {...form}>
+            <form onSubmit={form.handleSubmit(onSubmit)}>
+              <div className="flex flex-col gap-8">
+                <FormField
+                  control={form.control}
+                  name="email"
+                  render={({ field }) => (
+                    <FormItem className="relative">
+                      <FormLabel data-error={false}>Email</FormLabel>
+                      <FormControl>
+                        <Input
+                          placeholder="email@exemplo.com"
+                          autoComplete="email"
+                          {...field}
+                        />
+                      </FormControl>
 
-              <div className="grid gap-2">
-                <div className="flex items-center">
-                  <Label htmlFor="password">Senha</Label>
-                </div>
-                <Input id="password" type="password" required />
-                <Link
-                  to="/forgot-password"
-                  className="ml-auto inline-block text-sm underline-offset-4 hover:underline">
-                  Esqueceu sua senha?
-                </Link>
+                      <FormMessage className="absolute -bottom-6" />
+                    </FormItem>
+                  )}
+                />
+
+                <FormField
+                  control={form.control}
+                  name="password"
+                  render={({ field }) => (
+                    <FormItem className="relative">
+                      <FormLabel data-error={false}>Senha</FormLabel>
+                      <div className="relative">
+                        <FormControl>
+                          <Input
+                            type={showPassword ? "text" : "password"}
+                            className="pr-10"
+                            placeholder="*******"
+                            autoComplete="current-password"
+                            {...field}
+                          />
+                        </FormControl>
+                        <Button
+                          type="button"
+                          variant="ghost"
+                          size="sm"
+                          className="absolute right-0 top-0 h-full px-3 py-2 hover:bg-transparent  cursor-pointer"
+                          onClick={() => setShowPassword(prev => !prev)}
+                          onMouseDown={e => e.preventDefault()}>
+                          <div className="relative h-4 w-4">
+                            <Eye
+                              className={cn(
+                                "absolute inset-0 transition-opacity duration-20",
+                                showPassword ? "opacity-100" : "opacity-0",
+                              )}
+                              aria-hidden="true"
+                            />
+                            {/* Ícone de Olho Fechado */}
+                            <EyeClosed
+                              className={cn(
+                                "absolute inset-0 transition-opacity duration-200",
+                                showPassword ? "opacity-0" : "opacity-100",
+                              )}
+                              aria-hidden="true"
+                            />
+                          </div>
+                        </Button>
+                      </div>
+
+                      <FormMessage />
+                      <FormDescription className=" text-zinc-950 justify-self-end">
+                        <Link
+                          to="/forgot-password"
+                          className="ml-auto inline-block text-sm underline-offset-4 hover:underline">
+                          Esqueceu sua senha ?
+                        </Link>
+                      </FormDescription>
+                    </FormItem>
+                  )}
+                />
+
+                <Button
+                  type="submit"
+                  variant="default"
+                  className="w-full h-12 cursor-pointer bg-slate-950 flex-col gap-2">
+                  Login
+                </Button>
               </div>
-            </div>
-          </form>
+            </form>
+          </Form>
         </CardContent>
-        <CardFooter className="flex-col gap-2">
-          <Button
-            type="submit"
-            variant="default"
-            className="w-full h-12 cursor-pointer bg-slate-950"
-            onClick={toastHandle}>
-            Login
-          </Button>
-        </CardFooter>
+        {/* <CardFooter className="flex-col gap-2"></CardFooter> */}
       </Card>
     </div>
   );
