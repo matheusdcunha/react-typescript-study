@@ -1,7 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 
 export const Route = createFileRoute("/_public/sign-in")({
-  component: SignIn,
+  component: SigInView,
   head: () => ({
     meta: [
       {
@@ -11,6 +11,6 @@ export const Route = createFileRoute("/_public/sign-in")({
   }),
 });
 
-function SignIn() {
+function SigInView() {
   return <div>Hello "/_public/sign-in"!</div>;
 }

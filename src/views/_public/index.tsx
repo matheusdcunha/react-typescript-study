@@ -19,6 +19,13 @@ import { TypographyH1 } from "@/components/ui/typography-h1";
 
 export const Route = createFileRoute("/_public/")({
   component: Index,
+  head: () => ({
+    meta: [
+      {
+        title: "Login | Xebec",
+      },
+    ],
+  }),
 });
 
 function Index() {
@@ -33,7 +40,7 @@ function Index() {
       loading: "Validando usuário...",
       success: (data: { name: string }) => {
         return {
-          message: `${data.name} foi validado com sucesso.`,
+          message: `${data.name} foi validado com sucesso!`,
         };
       },
       error: "Error",
@@ -52,9 +59,13 @@ function Index() {
             Informe seus dados abaixo para entra em sua conta.
           </CardDescription>
           <CardAction className="ml-4">
-            <Button variant="link" className="cursor-pointer">
-              Registre-se
-            </Button>
+            <Link to="/register">
+              <Button
+                variant="default"
+                className="cursor-pointer bg-blue-500 hover:bg-blue-600">
+                Cadastre-se
+              </Button>
+            </Link>
           </CardAction>
         </CardHeader>
         <CardContent>
@@ -70,19 +81,17 @@ function Index() {
                 />
               </div>
 
-              <Link to="/forgot-password">
-                <div className="grid gap-2">
-                  <div className="flex items-center">
-                    <Label htmlFor="password">Senha</Label>
-                  </div>
-                  <Input id="password" type="password" required />
-                  <a
-                    href="./"
-                    className="ml-auto inline-block text-sm underline-offset-4 hover:underline">
-                    Esqueceu sua senha?
-                  </a>
+              <div className="grid gap-2">
+                <div className="flex items-center">
+                  <Label htmlFor="password">Senha</Label>
                 </div>
-              </Link>
+                <Input id="password" type="password" required />
+                <Link
+                  to="/forgot-password"
+                  className="ml-auto inline-block text-sm underline-offset-4 hover:underline">
+                  Esqueceu sua senha?
+                </Link>
+              </div>
             </div>
           </form>
         </CardContent>
@@ -90,7 +99,7 @@ function Index() {
           <Button
             type="submit"
             variant="default"
-            className="w-full h-12 cursor-pointer"
+            className="w-full h-12 cursor-pointer bg-slate-950"
             onClick={toastHandle}>
             Login
           </Button>

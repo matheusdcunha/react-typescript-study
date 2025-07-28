@@ -20,6 +20,13 @@ import { TypographyH1 } from "@/components/ui/typography-h1";
 
 export const Route = createFileRoute("/_public/forgot-password")({
   component: ForgotPassword,
+  head: () => ({
+    meta: [
+      {
+        title: "Esqueceu a senha | Xebec",
+      },
+    ],
+  }),
 });
 
 function ForgotPassword() {
@@ -34,7 +41,7 @@ function ForgotPassword() {
       loading: "Enviando email de recuperação...",
       success: (data: { name: string }) => {
         return {
-          message: `O email foi enviado com sucesso para ${data.name}`,
+          message: `O email foi enviado com sucesso para ${data.name}.`,
         };
       },
       error: "Error no envio do email de recuperação",
