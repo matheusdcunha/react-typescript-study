@@ -6,7 +6,7 @@ export const Route = createFileRoute("/_private/exams")({
   head: () => ({
     meta: [
       {
-        title: "Provas | Portal Do Aluno",
+        title: "Provas | Exebec",
       },
     ],
   }),

@@ -54,7 +54,7 @@ export const Route = createFileRoute("/_public/")({
   head: () => ({
     meta: [
       {
-        title: "Login | Portal do Aluno",
+        title: "Login | Exebec",
       },
     ],
   }),
@@ -97,9 +97,7 @@ function Index() {
 
   return (
     <div className="w-full max-w-sm flex flex-col">
-      <TypographyH1 className="flex justify-center mb-8">
-        Portal do Aluno
-      </TypographyH1>
+      <TypographyH1 className="flex justify-center mb-8">Exebec</TypographyH1>
       <Card>
         <CardHeader>
           <CardTitle>Acesse sua conta</CardTitle>

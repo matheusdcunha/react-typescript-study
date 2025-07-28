@@ -23,7 +23,7 @@ export const Route = createFileRoute("/_public/forgot-password")({
   head: () => ({
     meta: [
       {
-        title: "Esqueceu a senha | Portal do Aluno",
+        title: "Esqueceu a senha | Exebec",
       },
     ],
   }),

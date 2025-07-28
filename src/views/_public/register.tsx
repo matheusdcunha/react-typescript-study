@@ -89,7 +89,7 @@ export const Route = createFileRoute("/_public/register")({
   head: () => ({
     meta: [
       {
-        title: "Cadastro | Portal do Aluno",
+        title: "Cadastro | Exebec",
       },
     ],
   }),
