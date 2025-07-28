@@ -10,12 +10,19 @@
 
 import { Route as rootRouteImport } from './views/__root'
 import { Route as PublicLayoutRouteImport } from './views/_public/layout'
+import { Route as PrivateLayoutRouteImport } from './views/_private/layout'
 import { Route as PublicIndexRouteImport } from './views/_public/index'
-import { Route as PublicSignInRouteImport } from './views/_public/sign-in'
+import { Route as PublicRegisterRouteImport } from './views/_public/register'
 import { Route as PublicForgotPasswordRouteImport } from './views/_public/forgot-password'
+import { Route as PrivateHomeRouteImport } from './views/_private/home'
+import { Route as PrivateExamsRouteImport } from './views/_private/exams'
 
 const PublicLayoutRoute = PublicLayoutRouteImport.update({
   id: '/_public',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PrivateLayoutRoute = PrivateLayoutRouteImport.update({
+  id: '/_private',
   getParentRoute: () => rootRouteImport,
 } as any)
 const PublicIndexRoute = PublicIndexRouteImport.update({
@@ -23,9 +30,9 @@ const PublicIndexRoute = PublicIndexRouteImport.update({
   path: '/',
   getParentRoute: () => PublicLayoutRoute,
 } as any)
-const PublicSignInRoute = PublicSignInRouteImport.update({
-  id: '/sign-in',
-  path: '/sign-in',
+const PublicRegisterRoute = PublicRegisterRouteImport.update({
+  id: '/register',
+  path: '/register',
   getParentRoute: () => PublicLayoutRoute,
 } as any)
 const PublicForgotPasswordRoute = PublicForgotPasswordRouteImport.update({
@@ -33,38 +40,59 @@ const PublicForgotPasswordRoute = PublicForgotPasswordRouteImport.update({
   path: '/forgot-password',
   getParentRoute: () => PublicLayoutRoute,
 } as any)
+const PrivateHomeRoute = PrivateHomeRouteImport.update({
+  id: '/home',
+  path: '/home',
+  getParentRoute: () => PrivateLayoutRoute,
+} as any)
+const PrivateExamsRoute = PrivateExamsRouteImport.update({
+  id: '/exams',
+  path: '/exams',
+  getParentRoute: () => PrivateLayoutRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
+  '/exams': typeof PrivateExamsRoute
+  '/home': typeof PrivateHomeRoute
   '/forgot-password': typeof PublicForgotPasswordRoute
-  '/sign-in': typeof PublicSignInRoute
+  '/register': typeof PublicRegisterRoute
   '/': typeof PublicIndexRoute
 }
 export interface FileRoutesByTo {
+  '/exams': typeof PrivateExamsRoute
+  '/home': typeof PrivateHomeRoute
   '/forgot-password': typeof PublicForgotPasswordRoute
-  '/sign-in': typeof PublicSignInRoute
+  '/register': typeof PublicRegisterRoute
   '/': typeof PublicIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
+  '/_private': typeof PrivateLayoutRouteWithChildren
   '/_public': typeof PublicLayoutRouteWithChildren
+  '/_private/exams': typeof PrivateExamsRoute
+  '/_private/home': typeof PrivateHomeRoute
   '/_public/forgot-password': typeof PublicForgotPasswordRoute
-  '/_public/sign-in': typeof PublicSignInRoute
+  '/_public/register': typeof PublicRegisterRoute
   '/_public/': typeof PublicIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/forgot-password' | '/sign-in' | '/'
+  fullPaths: '/exams' | '/home' | '/forgot-password' | '/register' | '/'
   fileRoutesByTo: FileRoutesByTo
-  to: '/forgot-password' | '/sign-in' | '/'
+  to: '/exams' | '/home' | '/forgot-password' | '/register' | '/'
   id:
     | '__root__'
+    | '/_private'
     | '/_public'
+    | '/_private/exams'
+    | '/_private/home'
     | '/_public/forgot-password'
-    | '/_public/sign-in'
+    | '/_public/register'
     | '/_public/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
+  PrivateLayoutRoute: typeof PrivateLayoutRouteWithChildren
   PublicLayoutRoute: typeof PublicLayoutRouteWithChildren
 }
 
@@ -77,6 +105,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof PublicLayoutRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/_private': {
+      id: '/_private'
+      path: ''
+      fullPath: ''
+      preLoaderRoute: typeof PrivateLayoutRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/_public/': {
       id: '/_public/'
       path: '/'
@@ -84,11 +119,11 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof PublicIndexRouteImport
       parentRoute: typeof PublicLayoutRoute
     }
-    '/_public/sign-in': {
-      id: '/_public/sign-in'
-      path: '/sign-in'
-      fullPath: '/sign-in'
-      preLoaderRoute: typeof PublicSignInRouteImport
+    '/_public/register': {
+      id: '/_public/register'
+      path: '/register'
+      fullPath: '/register'
+      preLoaderRoute: typeof PublicRegisterRouteImport
       parentRoute: typeof PublicLayoutRoute
     }
     '/_public/forgot-password': {
@@ -98,18 +133,46 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof PublicForgotPasswordRouteImport
       parentRoute: typeof PublicLayoutRoute
     }
+    '/_private/home': {
+      id: '/_private/home'
+      path: '/home'
+      fullPath: '/home'
+      preLoaderRoute: typeof PrivateHomeRouteImport
+      parentRoute: typeof PrivateLayoutRoute
+    }
+    '/_private/exams': {
+      id: '/_private/exams'
+      path: '/exams'
+      fullPath: '/exams'
+      preLoaderRoute: typeof PrivateExamsRouteImport
+      parentRoute: typeof PrivateLayoutRoute
+    }
   }
 }
 
+interface PrivateLayoutRouteChildren {
+  PrivateExamsRoute: typeof PrivateExamsRoute
+  PrivateHomeRoute: typeof PrivateHomeRoute
+}
+
+const PrivateLayoutRouteChildren: PrivateLayoutRouteChildren = {
+  PrivateExamsRoute: PrivateExamsRoute,
+  PrivateHomeRoute: PrivateHomeRoute,
+}
+
+const PrivateLayoutRouteWithChildren = PrivateLayoutRoute._addFileChildren(
+  PrivateLayoutRouteChildren,
+)
+
 interface PublicLayoutRouteChildren {
   PublicForgotPasswordRoute: typeof PublicForgotPasswordRoute
-  PublicSignInRoute: typeof PublicSignInRoute
+  PublicRegisterRoute: typeof PublicRegisterRoute
   PublicIndexRoute: typeof PublicIndexRoute
 }
 
 const PublicLayoutRouteChildren: PublicLayoutRouteChildren = {
   PublicForgotPasswordRoute: PublicForgotPasswordRoute,
-  PublicSignInRoute: PublicSignInRoute,
+  PublicRegisterRoute: PublicRegisterRoute,
   PublicIndexRoute: PublicIndexRoute,
 }
 
@@ -118,6 +181,7 @@ const PublicLayoutRouteWithChildren = PublicLayoutRoute._addFileChildren(
 )
 
 const rootRouteChildren: RootRouteChildren = {
+  PrivateLayoutRoute: PrivateLayoutRouteWithChildren,
   PublicLayoutRoute: PublicLayoutRouteWithChildren,
 }
 export const routeTree = rootRouteImport

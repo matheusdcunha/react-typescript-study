@@ -1,8 +1,9 @@
 //Roteamento
-import { createFileRoute, Link } from "@tanstack/react-router";
-
+import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
+import type { FormEvent } from "react";
 //Componentes
 import { toast } from "sonner";
+import { z } from "zod";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -17,22 +18,36 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { TypographyH1 } from "@/components/ui/typography-h1";
 
+const signInSearchSchema = z.object({
+  redirect: z.string().optional().catch(undefined),
+});
+
 export const Route = createFileRoute("/_public/")({
   component: Index,
+  validateSearch: search => {
+    return signInSearchSchema.parse(search);
+  },
   head: () => ({
     meta: [
       {
-        title: "Login | Xebec",
+        title: "Login | Portal do Aluno",
       },
     ],
   }),
 });
 
 function Index() {
-  const toastHandle = () => {
+  const navigate = useNavigate();
+  const { redirect } = Route.useSearch();
+
+  const toastHandle = (e: FormEvent) => {
+    e.preventDefault();
+
     const myPromise = new Promise<{ name: string }>(resolve => {
       setTimeout(() => {
+        sessionStorage.setItem("authToken", "seu-token-de-exemplo");
         resolve({ name: "Usuário 01" });
+        navigate({ to: redirect || "/home" });
       }, 3000);
     });
 

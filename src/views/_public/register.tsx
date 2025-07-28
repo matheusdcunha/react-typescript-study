@@ -22,7 +22,7 @@ export const Route = createFileRoute("/_public/register")({
   head: () => ({
     meta: [
       {
-        title: "Registro | Xebec",
+        title: "Cadastro | Portal do Aluno",
       },
     ],
   }),
@@ -38,7 +38,7 @@ function RegisterView() {
 
     toast.promise(myPromise, {
       loading: "Validando usuário...",
-      success: (data: { name: string }) => {
+      success: () => {
         return {
           message: `Conta criada com sucesso!`,
         };
