@@ -1,7 +1,4 @@
 {
   "editor.formatOnSave": true,
   "editor.defaultFormatter": "biomejs.biome",
-  "[html]": {
-    "editor.formatOnSave": false
-  }
 }
