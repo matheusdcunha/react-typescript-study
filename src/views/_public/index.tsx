@@ -102,7 +102,7 @@ function Index() {
         <CardHeader>
           <CardTitle>Acesse sua conta</CardTitle>
           <CardDescription>
-            Informe seus dados abaixo para entra em sua conta.
+            Informe seus dados abaixo para entra com a sua conta.
           </CardDescription>
           <CardAction className="ml-4">
             <Link to="/register">
