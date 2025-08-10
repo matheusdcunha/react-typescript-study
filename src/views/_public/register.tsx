@@ -2,12 +2,7 @@ import { useState } from "react";
 import { format } from "date-fns";
 
 //Roteamento
-import {
-  createFileRoute,
-  Link,
-  redirect,
-  useNavigate,
-} from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
 
 //Validação
 import { z } from "zod";
@@ -26,14 +21,12 @@ import {
   CardAction,
   CardContent,
   CardDescription,
-  CardFooter,
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
 import {
   Form,
   FormControl,
-  FormDescription,
   FormField,
   FormItem,
   FormLabel,
@@ -45,7 +38,6 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import { TypographyH1 } from "@/components/ui/typography-h1";
 import { cn } from "@/lib/utils";
 import { Calendar } from "@/components/ui/calendar";
@@ -96,7 +88,6 @@ export const Route = createFileRoute("/_public/register")({
 });
 
 function RegisterView() {
-  const navigate = useNavigate();
   const [showPassword, setShowPassword] = useState(false);
   const [showPasswordConfirmation, setShowPasswordConfirmation] =
     useState(false);
@@ -108,6 +99,8 @@ function RegisterView() {
   const registerWithMask = useHookFormMask(form.register);
 
   function onSubmit(data: z.infer<typeof formSchema>) {
+    console.log(data);
+
     const myPromise = new Promise<z.infer<typeof formSchema>>(() => {
       setTimeout(() => {}, 1000);
     });
